@@ -1,0 +1,6 @@
+{
+  "name": "Safeguard K3 Pelindo",
+  "description": "Sistem Pelaporan K3 PT. Pelindo Multi Terminal dengan penanganan Geolocation GPS kondisional.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
