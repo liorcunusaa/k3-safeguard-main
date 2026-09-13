@@ -93,17 +93,28 @@ export default function App() {
             }
           }
 
-          const rawRole = String(
-            userData?.role ||
-            (firebaseUser.email?.toLowerCase().includes("admin") ? "BPO" : "USER")
-          ).toUpperCase();
-          const firestoreRole = ["ADMIN", "BPO"].includes(rawRole) ? UserRole.BPO : UserRole.USER;
+          const profileRole = String(userData?.role || "").toUpperCase();
+          const rawRole = profileRole ||
+            (firebaseUser.email?.toLowerCase().includes("admin") ? "BPO" : "USER");
+          const hasExplicitRole = ["ADMIN", "BPO", "PENGAWAS", "USER", "OFFICER", "WORKER"].includes(profileRole);
+          const firestoreRole = ["ADMIN", "BPO", "PENGAWAS"].includes(rawRole) ? UserRole.BPO : UserRole.USER;
 
           // Jika ada role override dari toggle (disimpan di sessionStorage), gunakan itu
           const savedOverride = sessionStorage.getItem("safeguard_role_override") as UserRole | null;
-          const correctRole = savedOverride ?? firestoreRole;
+          // A role stored in the account profile is authoritative. The session
+          // override is only a local UI toggle and must not downgrade a BPO account.
+          const previousRole = user?.uid === firebaseUser.uid ? user.role : null;
+          const correctRole = hasExplicitRole
+            ? firestoreRole
+            : (previousRole ?? savedOverride ?? firestoreRole);
 
           setUser((prev: any) => {
+            // Login sudah dapat memuat profil lebih dulu. Jangan menimpa role
+            // yang valid dengan default USER ketika snapshot profil belum siap.
+            if ((!userData || !hasExplicitRole) && prev?.uid === firebaseUser.uid) {
+              return prev;
+            }
+
             if (prev && prev.uid === firebaseUser.uid && prev.role === correctRole && prev.name) {
               return prev;
             }
