@@ -11,7 +11,17 @@ import {
   CheckCircle2,
   AlertCircle,
 } from "lucide-react";
-import { auth, db, signInWithEmailAndPassword, getDoc, doc } from "../firebase";
+import {
+  auth,
+  db,
+  signInWithEmailAndPassword,
+  getDoc,
+  getDocs,
+  collection,
+  query,
+  where,
+  doc,
+} from "../firebase";
 import { UserRole } from "../constants/enums";
 
 interface LoginProps {
@@ -55,6 +65,28 @@ export default function Login({ onLoginSuccess }: LoginProps) {
             position: data.jabatan || authUser.jabatan,
             division: data.divisi || authUser.divisi,
           };
+        } else {
+          const uidSnapshot = await getDocs(
+            query(collection(db, "users"), where("uid", "==", authUser.uid))
+          );
+          const emailSnapshot = uidSnapshot.empty
+            ? await getDocs(
+                query(collection(db, "users"), where("email", "==", authUser.email))
+              )
+            : uidSnapshot;
+          const profileDoc = emailSnapshot.docs[0];
+
+          if (profileDoc) {
+            const data = profileDoc.data();
+            firestoreUser = {
+              ...authUser,
+              ...data,
+              name: data.nama || authUser.nama,
+              role: data.role || authUser.role,
+              position: data.jabatan || authUser.jabatan,
+              division: data.divisi || authUser.divisi,
+            };
+          }
         }
       } catch (err) {
         console.warn("Could not fetch user document from Firestore:", err);
