@@ -748,7 +748,7 @@ export default function Dashboard({
                   </FilterGroup>
 
                   {/* SEARCH */}
-                  <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flex: "1 1 360px", justifyContent: "flex-end", maxWidth: "520px", marginLeft: "auto" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flex: "1 1 360px", justifyContent: "flex-end", minWidth: 0, marginLeft: "auto" }}>
                     <SearchBox>
                       <Search size={15} color="var(--text-muted)" style={{ flexShrink: 0 }} />
                       <input
@@ -2357,7 +2357,7 @@ const SearchBox = styled.div`
   padding: 8px 14px;
   min-width: 360px;
   width: 100%;
-  max-width: 520px;
+  max-width: none;
   transition: all 0.2s ease;
 
   &:hover {
