@@ -104,6 +104,12 @@ export default function App() {
           const correctRole = savedOverride ?? firestoreRole;
 
           setUser((prev: any) => {
+            // Login sudah dapat memuat profil lebih dulu. Jangan menimpa role
+            // yang valid dengan default USER ketika snapshot profil belum siap.
+            if (!userData && prev?.uid === firebaseUser.uid) {
+              return prev;
+            }
+
             if (prev && prev.uid === firebaseUser.uid && prev.role === correctRole && prev.name) {
               return prev;
             }
