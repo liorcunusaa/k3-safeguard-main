@@ -101,7 +101,9 @@ export default function App() {
 
           // Jika ada role override dari toggle (disimpan di sessionStorage), gunakan itu
           const savedOverride = sessionStorage.getItem("safeguard_role_override") as UserRole | null;
-          const correctRole = savedOverride ?? firestoreRole;
+          // A role stored in the account profile is authoritative. The session
+          // override is only a local UI toggle and must not downgrade a BPO account.
+          const correctRole = userData?.role ? firestoreRole : (savedOverride ?? firestoreRole);
 
           setUser((prev: any) => {
             // Login sudah dapat memuat profil lebih dulu. Jangan menimpa role
