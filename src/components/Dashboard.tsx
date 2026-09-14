@@ -51,6 +51,11 @@ import RiskMap from "./RiskMap";
 import { useTheme } from "../context/ThemeContext";
 import { auth, signOut } from "../firebase";
 
+const formatDepartmentLabel = (division?: string) => {
+  const value = (division || "Operasional & Bongkar Muat").trim();
+  return /^departemen\b/i.test(value) ? value : `Departemen ${value}`;
+};
+
 const PelindoLogo = () => (
   <motion.div
     initial={{ opacity: 0, scale: 0.8 }}
@@ -516,7 +521,7 @@ export default function Dashboard({
               <div>
                 <h4>Selamat Bertugas, {user?.name || "Kru Operasional Lapangan"}!</h4>
                 <p>
-                  Departemen {user?.division || "Operasional & Bongkar Muat"} • Laporkan setiap potensi bahaya di lingkungan pelabuhan.
+                  {formatDepartmentLabel(user?.division)} • Laporkan setiap potensi bahaya di lingkungan pelabuhan.
                 </p>
               </div>
             </div>

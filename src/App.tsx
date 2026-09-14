@@ -131,7 +131,7 @@ export default function App() {
                 userData?.divisi ||
                 (correctRole === UserRole.BPO
                   ? "HSE & K3 Lingkungan"
-                  : "Departemen Operasional & Bongkar Muat"),
+                  : "Operasional Terminal"),
               role: correctRole,
               points: userData?.points || 0,
             };
